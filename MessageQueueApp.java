@@ -1,57 +1,34 @@
+import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-// Main application class for simulating a producer-consumer scenario using a message queue.
+/**
+ * This class simulates a message-driven application using a producer-consumer pattern
+ * with a message queue. It tracks and logs the total number of messages processed
+ * successfully and the number of errors encountered.
+ */
 public class MessageQueueApp {
 
-    private static final int NUM_MESSAGES = 10; // Number of messages each producer produces
-    private static final int NUM_PRODUCERS = 2; // Number of producer threads
-    private static final int NUM_CONSUMERS = 3; // Number of consumer threads
+    private static final int NUM_PRODUCERS = 2;
+    private static final int NUM_CONSUMERS = 3;
 
-  
     public static void main(String[] args) {
-        BlockingQueue<Message> queue = new LinkedBlockingQueue<>(); // Message queue
-        AtomicInteger successfulMessages = new AtomicInteger(0); // Counter for successful messages processed
-        AtomicInteger errorMessages = new AtomicInteger(0); // Counter for errors encountered
+        BlockingQueue<String> queue = new LinkedBlockingQueue<>();
+        AtomicInteger successfulMessages = new AtomicInteger(0);
+        AtomicInteger errorMessages = new AtomicInteger(0);
 
-        // Start producer threads
+        // Start producers
         for (int i = 0; i < NUM_PRODUCERS; i++) {
-            new Thread(() -> {
-                for (int j = 0; j < NUM_MESSAGES; j++) {
-                    String messageContent = "Message-" + i + "-" + j;
-                    Message message = new Message(messageContent);
-                    try {
-                        queue.put(message); // Put message into the queue
-                        System.out.println("Produced: " + messageContent);
-                        successfulMessages.incrementAndGet(); // Increment successful message counter
-                    } catch (InterruptedException e) {
-                        System.err.println("Error while producing message: " + e.getMessage());
-                        errorMessages.incrementAndGet(); // Increment error counter
-                    }
-                }
-            }).start();
+            new Thread(new Producer(queue)).start();
         }
 
-        // Start consumer threads
+        // Start consumers
         for (int i = 0; i < NUM_CONSUMERS; i++) {
-            new Thread(() -> {
-                while (true) {
-                    try {
-                        Message message = queue.take(); // Take message from the queue
-                        System.out.println("Consumed: " + message.getContent());
-                        // Simulate processing
-                        Thread.sleep(100); // Processing time simulation
-                        successfulMessages.incrementAndGet(); // Increment successful message counter
-                    } catch (InterruptedException e) {
-                        System.err.println("Error while consuming message: " + e.getMessage());
-                        errorMessages.incrementAndGet(); // Increment error counter
-                    }
-                }
-            }).start();
+            new Thread(new Consumer(queue, successfulMessages, errorMessages)).start();
         }
 
-        // Logging thread to periodically print statistics
+        // Start logging thread to print statistics
         new Thread(() -> {
             while (true) {
                 try {
@@ -65,5 +42,67 @@ public class MessageQueueApp {
                 }
             }
         }).start();
+
+        // Accept user input and produce messages
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter messages to produce (type 'exit' to stop):");
+        String input;
+        while (!(input = scanner.nextLine()).equals("exit")) {
+            try {
+                queue.put(input);
+                System.out.println("Produced: " + input);
+            } catch (InterruptedException e) {
+                System.err.println("Error while producing message: " + e.getMessage());
+            }
+        }
+        scanner.close();
+    }
+
+    /**
+     * Consumer class that consumes messages from the queue.
+     */
+    static class Consumer implements Runnable {
+        private BlockingQueue<String> queue;
+        private AtomicInteger successfulMessages;
+        private AtomicInteger errorMessages;
+
+        public Consumer(BlockingQueue<String> queue, AtomicInteger successfulMessages, AtomicInteger errorMessages) {
+            this.queue = queue;
+            this.successfulMessages = successfulMessages;
+            this.errorMessages = errorMessages;
+        }
+
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    String message = queue.take();
+                    System.out.println("Consumed: " + message);
+                    // Simulate processing
+                    Thread.sleep(100); // Processing time simulation
+                    successfulMessages.incrementAndGet(); // Increment successful message count
+                } catch (InterruptedException e) {
+                    System.err.println("Error while consuming message: " + e.getMessage());
+                    errorMessages.incrementAndGet(); // Increment error count
+                }
+            }
+        }
+    }
+
+    /**
+     * Producer class that accepts user input and puts messages into the queue.
+     */
+    static class Producer implements Runnable {
+        private BlockingQueue<String> queue;
+
+        public Producer(BlockingQueue<String> queue) {
+            this.queue = queue;
+        }
+
+        @Override
+        public void run() {
+            // Producer doesn't need to produce messages independently in this version
+            // It just waits for user input and puts messages into the queue
+        }
     }
 }
