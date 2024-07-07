@@ -3,11 +3,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * This class simulates a message-driven application using a producer-consumer pattern
- * with a message queue. It tracks and logs the total number of messages processed
- * successfully and the number of errors encountered.
- */
 public class MessageQueueApp {
 
     private static final int NUM_PRODUCERS = 2;
@@ -58,9 +53,7 @@ public class MessageQueueApp {
         scanner.close();
     }
 
-    /**
-     * Consumer class that consumes messages from the queue.
-     */
+    //Consumer class that consumes messages from the queue.
     static class Consumer implements Runnable {
         private BlockingQueue<String> queue;
         private AtomicInteger successfulMessages;
@@ -89,9 +82,7 @@ public class MessageQueueApp {
         }
     }
 
-    /**
-     * Producer class that accepts user input and puts messages into the queue.
-     */
+    // Producer class that accepts user input and puts messages into the queue.
     static class Producer implements Runnable {
         private BlockingQueue<String> queue;
 
@@ -101,8 +92,7 @@ public class MessageQueueApp {
 
         @Override
         public void run() {
-            // Producer doesn't need to produce messages independently in this version
-            // It just waits for user input and puts messages into the queue
+            // Producer doesn't need to produce messages independently, just waits for user input and puts messages into the queue
         }
     }
 }
