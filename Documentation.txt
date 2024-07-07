@@ -1,0 +1,19 @@
+
+Classes and Components:
+
+Message: Represents a message with a content field and methods to access it.
+MessageQueueApp: Main application class that initializes a BlockingQueue, creates producer and consumer threads, and manages message processing. It also includes a logging thread to periodically print processing statistics.
+
+-------------------------------------------------
+
+Instructions to Run the Application:
+
+Compile and Run:
+1. Save the Message.java and MessageQueueApp.java files.
+2. Compile them using javac Message.java MessageQueueApp.java.
+3. Run the application using java MessageQueueApp.
+
+
+Expected Output:
+You should see messages being produced and consumed by multiple threads concurrently.
+Every 5 seconds, the application will print statistics showing the total number of messages processed successfully and the number of errors encountered.
