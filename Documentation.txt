@@ -1,19 +1,22 @@
+Overview:
+  MessageQueueApp class simulates a message-driven application using a producer-consumer pattern with a BlockingQueue for managing messages.
+  It uses AtomicInteger to track and log the total number of messages processed successfully and errors encountered.
+  Producers wait for user input to produce messages, which are then consumed by consumer threads.
+-----------------
 
-Classes and Components:
+Instructions:
 
-Message: Represents a message with a content field and methods to access it.
-MessageQueueApp: Main application class that initializes a BlockingQueue, creates producer and consumer threads, and manages message processing. It also includes a logging thread to periodically print processing statistics.
+Running the Application:
 
--------------------------------------------------
+Compile: 
+    Save the above code in a file named MessageQueueApp.java.
+    Compile it using javac MessageQueueApp.java.
 
-Instructions to Run the Application:
+Execute: 
+    Run the compiled class using java MessageQueueApp.
+    This will start the application, where you can enter messages to be processed by consumers.
 
-Compile and Run:
-1. Save the Message.java and MessageQueueApp.java files.
-2. Compile them using javac Message.java MessageQueueApp.java.
-3. Run the application using java MessageQueueApp.
-
-
-Expected Output:
-You should see messages being produced and consumed by multiple threads concurrently.
-Every 5 seconds, the application will print statistics showing the total number of messages processed successfully and the number of errors encountered.
+Using the Application:
+      After starting the application, enter messages in the console.
+      Each message will be added to the queue and consumed by one of the consumer threads.
+      Type 'exit' to stop adding messages and terminate the application.
